@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Local env and sqlite artifacts
+.env
+.env.*
+backend/eyeheat.db
+backend/eyeheat.db-*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

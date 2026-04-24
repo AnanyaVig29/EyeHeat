@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/EyeMovementPatterns.css";
+import GazeTracker from "../components/GazeTracker";
 
 /* ─────── SVG Pattern Illustrations ─────── */
 
@@ -96,6 +97,8 @@ export default function EyeMovementPatterns() {
         </div>
         <button className="emp-view-all-btn">View All Patterns</button>
       </div>
+
+      <GazeTracker />
 
       <div className="emp-patterns-grid">
         {patterns.map((p) => (
