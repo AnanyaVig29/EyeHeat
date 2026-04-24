@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar";
-import Footer from "./components/footer";
 import "./styles/navbar.css";
 import "./App.css";
-import "./styles/footer.css";
+import "./styles/overview.css";
 import "./styles/analytics.css";
+import "./styles/alerts.css";
+import "./styles/reports.css";
 import "./styles/abtesting.css";
 import "./styles/EyeMovementPatterns.css";
+import "./styles/Login.css";
 
 
 // Import pages
@@ -53,7 +55,6 @@ function App() {
           <Route path="/eye-movement-patterns" element={<EyeMovementPatterns />} />
           <Route path="*" element={<Navigate to="/overview" replace />} />
         </Routes>
-        <Footer />
       </main>
     </div>
   );

@@ -1,50 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
+import "../styles/analytics.css";
 
+const Analytics = () => {
+  const [activeTab, setActiveTab] = useState("gaze");
+  const [heatmapType, setHeatmapType] = useState("attention");
 
-const clickOverview = [
-    { label: "Total Clicks", value: "48,329", change: "+14.2%", positive: true },
-    { label: "Unique Clicks", value: "31,204", change: "+9.8%", positive: true },
-    { label: "Avg. Clicks/Session", value: "3.8", change: "+5.1%", positive: true },
-    { label: "Rage Clicks", value: "1,247", change: "-22.3%", positive: true },
-];
+  // Gaze-Based Analytics Data
+  const gazeMetrics = [
+    { label: "Total Fixations", value: "12,847", change: "+8.2%", icon: "👁️" },
+    { label: "Avg. Fixation Duration", value: "285ms", change: "+12.1%", icon: "⏱️" },
+    { label: "Saccade Count", value: "8,341", change: "+5.3%", icon: "➡️" },
+    { label: "Scanpath Length", value: "2,847px", change: "+3.1%", icon: "🧭" },
+  ];
 
-const clickedElements = [
-    { element: "Get Started Button", clicks: "8,432", percentage: 72, color: "#b46445" },
-    { element: "Pricing Tab", clicks: "6,891", percentage: 58, color: "#f59e0b" },
-    { element: "Navigation Menu", clicks: "5,623", percentage: 47, color: "#3b82f6" },
-    { element: "Contact Form Submit", clicks: "4,102", percentage: 34, color: "#10b981" },
-    { element: "Footer Links", clicks: "3,456", percentage: 29, color: "#8b5cf6" },
-    { element: "Search Bar", clicks: "2,891", percentage: 24, color: "#ec4899" },
-];
+  // Time-Based Analytics
+  const timeMetrics = [
+    { label: "TTFF (Time to First Fixation)", value: "342ms", target: "< 500ms", status: "good" },
+    { label: "Dwell Time (Avg)", value: "3.2s", target: "> 2s", status: "good" },
+    { label: "Total Viewing Time", value: "28:43", sessions: "2,341", status: "good" },
+    { label: "Engagement Score", value: "8.7/10", previous: "7.9/10", status: "good" },
+  ];
 
-const scrollDepth = [
-    { depth: "0-25%", users: "100%", width: 100, color: "#10b981" },
-    { depth: "25-50%", users: "78%", width: 78, color: "#3b82f6" },
-    { depth: "50-75%", users: "52%", width: 52, color: "#f59e0b" },
-    { depth: "75-100%", users: "31%", width: 31, color: "#ef4444" },
-];
+  // AOI Analytics
+  const aoiData = [
+    { name: "CTA Button", fixations: 487, dwellTime: "4.2s", attention: 94 },
+    { name: "Hero Image", fixations: 623, dwellTime: "5.8s", attention: 89 },
+    { name: "Navigation Menu", fixations: 234, dwellTime: "2.1s", attention: 76 },
+    { name: "Footer", fixations: 87, dwellTime: "0.8s", attention: 22 },
+  ];
 
-const sectionEngagement = [
-    { section: "Hero / Header", avgTime: "4.2s", gazeFixations: 342, clicks: "8,432", attention: 92 },
-    { section: "Features Grid", avgTime: "6.8s", gazeFixations: 521, clicks: "3,201", attention: 78 },
-    { section: "Pricing Table", avgTime: "8.1s", gazeFixations: 684, clicks: "6,891", attention: 85 },
-    { section: "Testimonials", avgTime: "3.5s", gazeFixations: 198, clicks: "1,024", attention: 45 },
-    { section: "Contact Form", avgTime: "5.6s", gazeFixations: 412, clicks: "4,102", attention: 68 },
-    { section: "Footer", avgTime: "1.2s", gazeFixations: 87, clicks: "3,456", attention: 22 },
-];
+  // Heatmap Types Data
+  const heatmapTypes = {
+    attention: { description: "Attention Heatmap - Where users look the most", color: "red" },
+    click: { description: "Click Heatmap - Where users click/tap", color: "blue" },
+    scroll: { description: "Scroll Heatmap - How far users scroll", color: "green" },
+    aoi: { description: "AOI Heatmap - Attention in defined areas", color: "orange" },
+    cognitive: { description: "Cognitive Load - User effort/difficulty", color: "purple" },
+  };
 
-const topPages = [
-    { page: "/", views: "12,842", clicks: "18,320", gazeTime: "4.2s", score: 94 },
-    { page: "/features", views: "9,842", clicks: "12,104", gazeTime: "6.8s", score: 87 },
-    { page: "/pricing", views: "6,125", clicks: "9,230", gazeTime: "8.1s", score: 82 },
-    { page: "/about", views: "3,842", clicks: "4,560", gazeTime: "3.5s", score: 65 },
-    { page: "/blog", views: "4,123", clicks: "5,890", gazeTime: "5.1s", score: 71 },
-    { page: "/contact", views: "2,156", clicks: "3,102", gazeTime: "5.6s", score: 58 },
-];
+  // Comparative Data (A/B Testing)
+  const comparativeData = [
+    { metric: "Avg Attention Score", versionA: 78, versionB: 85, winner: "B" },
+    { metric: "TTFF (Lower is Better)", versionA: 512, versionB: 384, winner: "B" },
+    { metric: "Dwell Time", versionA: "2.8s", versionB: "3.5s", winner: "B" },
+    { metric: "Click Conversion", versionA: "2.3%", versionB: "4.1%", winner: "B" },
+  ];
 
-function Analytics() {
-    return (
-        <div className="analytics-container">
+  // Device/Platform Analytics
+  const deviceAnalytics = [
+    { device: "Desktop", sessions: "5,234", attention: 86, ttff: "298ms", dwellTime: "4.2s" },
+    { device: "Tablet", sessions: "2,847", attention: 72, ttff: "425ms", dwellTime: "3.1s" },
+    { device: "Mobile", sessions: "3,156", attention: 68, ttff: "587ms", dwellTime: "2.8s" },
+  ];
+
+  return (
+    <div className="analytics-container">
             <h1 className="analytics-title">Analytics</h1>
 
             {/* Click Overview KPIs */}
