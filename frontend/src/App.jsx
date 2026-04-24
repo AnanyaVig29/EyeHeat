@@ -6,6 +6,7 @@ import "./App.css";
 import "./styles/footer.css";
 import "./styles/analytics.css";
 import "./styles/abtesting.css";
+import "./styles/EyeMovementPatterns.css";
 
 // Import pages
 import Overview from "./pages/overview";
