@@ -5,10 +5,13 @@ import Footer from "./components/footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./styles/navbar.css";
 import "./App.css";
-import "./styles/footer.css";
+import "./styles/overview.css";
 import "./styles/analytics.css";
+import "./styles/alerts.css";
+import "./styles/reports.css";
 import "./styles/abtesting.css";
 import "./styles/EyeMovementPatterns.css";
+import "./styles/Login.css";
 
 // Import pages
 import Overview from "./pages/overview";

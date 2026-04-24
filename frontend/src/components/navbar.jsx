@@ -148,7 +148,6 @@ function Navbar({ isOpen, toggleNav }) {
                     <SettingsIcon /> <span>Settings</span>
                 </NavLink>
             </div>
-
             <div className="navbar-footer">
                 <div className="footer-dropdown">
                     <GlobeIcon /> <span>example.com</span> <ChevronDownIcon />
