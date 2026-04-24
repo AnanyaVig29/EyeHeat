@@ -71,14 +71,6 @@ const SettingsIcon = () => (
     </svg>
 );
 
-const GlobeIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="2" x2="22" y1="12" y2="12" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-)
-
 const ChevronDownIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="chevron">
         <path d="m6 9 6 6 6-6" />
@@ -147,27 +139,6 @@ function Navbar({ isOpen, toggleNav }) {
                 <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
                     <SettingsIcon /> <span>Settings</span>
                 </NavLink>
-            </div>
-            <div className="navbar-footer">
-                <div className="footer-dropdown">
-                    <GlobeIcon /> <span>example.com</span> <ChevronDownIcon />
-                </div>
-
-                <div 
-                    className="user-profile" 
-                    onClick={() => {
-                        localStorage.removeItem("token");
-                        window.location.href = "/login";
-                    }}
-                    style={{cursor: 'pointer'}}
-                    title="Click to Logout"
-                >
-                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=e2dcd0&color=4a3b32" alt="User" className="user-avatar" />
-                    <div className="user-info">
-                        <span className="user-name">Logout</span>
-                        <span className="user-email">End Session</span>
-                    </div>
-                </div>
             </div>
         </nav>
     );

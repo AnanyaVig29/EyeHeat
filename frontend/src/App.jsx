@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/navbar";
-import Footer from "./components/footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./styles/navbar.css";
 import "./App.css";
@@ -25,10 +24,21 @@ import Login from "./pages/Login";
 import Settings from "./pages/settings";
 
 function App() {
-  const [isNavOpen, setIsNavOpen] = useState(true);
+  const [isNavOpen, setIsNavOpen] = useState(() => window.innerWidth > 1024);
   const location = useLocation();
 
   const toggleNav = () => setIsNavOpen(!isNavOpen);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsNavOpen(window.innerWidth > 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
@@ -69,7 +79,6 @@ function App() {
           
           <Route path="*" element={<Navigate to="/overview" replace />} />
         </Routes>
-        {!isLoginPage && <Footer />}
       </main>
     </div>
   );

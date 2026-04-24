@@ -53,9 +53,31 @@ const Analytics = () => {
     { device: "Mobile", sessions: "3,156", attention: 68, ttff: "587ms", dwellTime: "2.8s" },
   ];
 
+    const clickOverview = [
+        { label: "Total Clicks", value: "18,246", change: "+9.1%", positive: true },
+        { label: "Click-through Rate", value: "4.8%", change: "+1.4%", positive: true },
+        { label: "Misclick Rate", value: "3.2%", change: "-0.8%", positive: true },
+        { label: "Repeat Visits", value: "41%", change: "+2.6%", positive: true },
+    ];
+
+    const clickedElements = [
+        { element: "Primary CTA", clicks: "4,812", percentage: 92, color: "#10b981" },
+        { element: "Pricing Cards", clicks: "3,274", percentage: 78, color: "#3b82f6" },
+        { element: "Nav Menu", clicks: "2,186", percentage: 61, color: "#f59e0b" },
+        { element: "Footer Links", clicks: "1,024", percentage: 38, color: "#ef4444" },
+    ];
+
+    const topPages = [
+        { page: "/overview", views: "9,420", clicks: "2,310", gazeTime: "4.8s", score: 94 },
+        { page: "/pricing", views: "7,118", clicks: "1,882", gazeTime: "4.1s", score: 86 },
+        { page: "/reports", views: "5,482", clicks: "1,044", gazeTime: "3.5s", score: 74 },
+        { page: "/settings", views: "3,216", clicks: "732", gazeTime: "2.9s", score: 58 },
+    ];
+
   return (
     <div className="analytics-container">
-            <h1 className="analytics-title">Analytics</h1>
+                        <h1 className="page-title analytics-title">Analytics</h1>
+                        <p className="page-subtitle">A unified view of gaze, click, and page-level performance.</p>
 
             {/* Click Overview KPIs */}
             <div className="analytics-kpi-grid">
