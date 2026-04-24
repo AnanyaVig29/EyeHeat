@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./EyeMovementPatterns.css";
+import "../styles/EyeMovementPatterns.css";
 
 /* ─────── SVG Pattern Illustrations ─────── */
 
