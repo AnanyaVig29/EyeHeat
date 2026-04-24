@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
@@ -10,20 +11,33 @@ import "./styles/EyeMovementPatterns.css";
 
 // Import pages
 import Overview from "./pages/overview";
-// import Heatmaps from "./pages/Heatmaps";
-// import Sessions from "./pages/Sessions";
-// import EyeTracking from "./pages/EyeTracking";
 import Analytics from "./pages/analytics";
 import Reports from "./pages/reports";
 import Alerts from "./pages/alerts";
 import ABTesting from "./pages/abtesting";
 import EyeMovementPatterns from "./pages/EyeMovementPatterns";
-// import Settings from "./pages/Settings";
 
 function App() {
+  const [isNavOpen, setIsNavOpen] = useState(true);
+
+  const toggleNav = () => setIsNavOpen(!isNavOpen);
+
   return (
-    <div className="app-container">
-      <Navbar />
+    <div className={`app-container ${isNavOpen ? "nav-open" : "nav-closed"}`}>
+      {/* MOBILE BACKDROP */}
+      {isNavOpen && <div className="nav-backdrop" onClick={toggleNav}></div>}
+
+      {!isNavOpen && (
+        <button className="nav-open-btn" onClick={toggleNav} aria-label="Open Navigation">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      )}
+
+      <Navbar isOpen={isNavOpen} toggleNav={toggleNav} />
 
       <main className="main-content">
         <Routes>
@@ -35,9 +49,6 @@ function App() {
           <Route path="/ab-testing" element={<ABTesting />} />
           <Route path="/eye-movement-patterns" element={<EyeMovementPatterns />} />
           <Route path="*" element={<Navigate to="/overview" replace />} />
-          {/* <Route path="/heatmaps" element={<Heatmaps />} />
-          <Route path="/sessions" element={<Sessions />} />
-          <Route path="/settings" element={<Settings />} /> */}
         </Routes>
         <Footer />
       </main>
