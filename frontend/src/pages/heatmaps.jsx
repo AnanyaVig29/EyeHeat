@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import h337 from "heatmap.js";
 import { MousePointer2, Eye, MousePointerClick, ScrollText, Info, Target, Users, Activity, Flame } from "lucide-react";
-import "../styles/Heatmaps.css";
+import "../styles/heatmaps.css";
 
 const HEATMAP_TYPES = [
     { id: "gaze", label: "Gaze Heatmap", icon: Eye, description: "Shows where users look the most based on eye-tracking fixations." },
@@ -70,10 +70,10 @@ const Heatmaps = () => {
             ];
             regions.forEach(r => {
                 for (let i = 0; i < 60; i++) {
-                    points.push({ 
-                        x: r.x + Math.random() * r.w, 
-                        y: r.y + Math.random() * r.h, 
-                        value: 6 
+                    points.push({
+                        x: r.x + Math.random() * r.w,
+                        y: r.y + Math.random() * r.h,
+                        value: 6
                     });
                 }
             });
@@ -81,28 +81,28 @@ const Heatmaps = () => {
             // Percentage-based segments to avoid cropping
             // Segment A: (New)
             for (let i = 0; i < 60; i++) {
-                points.push({ 
-                    x: width * 0.1 + Math.random() * (width * 0.3), 
-                    y: height * 0.2 + Math.random() * (height * 0.4), 
-                    value: 7 
+                points.push({
+                    x: width * 0.1 + Math.random() * (width * 0.3),
+                    y: height * 0.2 + Math.random() * (height * 0.4),
+                    value: 7
                 });
             }
             // Segment B: (Returning)
             for (let i = 0; i < 60; i++) {
-                points.push({ 
-                    x: width * 0.6 + Math.random() * (width * 0.3), 
-                    y: height * 0.4 + Math.random() * (height * 0.4), 
-                    value: 9 
+                points.push({
+                    x: width * 0.6 + Math.random() * (width * 0.3),
+                    y: height * 0.4 + Math.random() * (height * 0.4),
+                    value: 9
                 });
             }
         } else if (type === "rage") {
             // Intense cluster in one spot
             const spot = { x: width * 0.15, y: height * 0.75 };
             for (let i = 0; i < 100; i++) {
-                points.push({ 
-                    x: spot.x + (Math.random() - 0.5) * 20, 
-                    y: spot.y + (Math.random() - 0.5) * 20, 
-                    value: 20 
+                points.push({
+                    x: spot.x + (Math.random() - 0.5) * 20,
+                    y: spot.y + (Math.random() - 0.5) * 20,
+                    value: 20
                 });
             }
         }
@@ -242,9 +242,9 @@ const Heatmaps = () => {
                         )}
                         {activeType === "aoi" && (
                             <div className="aoi-overlay">
-                                <div className="aoi-box" style={{top: '60%', left: '10%', width: '30%', height: '25%'}}><span>Hero Section</span></div>
-                                <div className="aoi-box" style={{top: '5%', left: '70%', width: '25%', height: '10%'}}><span>Nav Menu</span></div>
-                                <div className="aoi-box" style={{top: '40%', left: '5%', width: '35%', height: '35%'}}><span>Features</span></div>
+                                <div className="aoi-box" style={{ top: '60%', left: '10%', width: '30%', height: '25%' }}><span>Hero Section</span></div>
+                                <div className="aoi-box" style={{ top: '5%', left: '70%', width: '25%', height: '10%' }}><span>Nav Menu</span></div>
+                                <div className="aoi-box" style={{ top: '40%', left: '5%', width: '35%', height: '35%' }}><span>Features</span></div>
                             </div>
                         )}
                     </div>
@@ -296,7 +296,7 @@ const Heatmaps = () => {
                             {activeType === "realtime" && (
                                 <>
                                     <div className="legend-item"><div className="color-box" style={{ background: 'cyan' }}></div> <span>Live Interaction</span></div>
-                                    <div className="pulse-dot"></div> <span style={{fontSize: '0.8rem', opacity: 0.6}}>Broadcasting Live</span>
+                                    <div className="pulse-dot"></div> <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>Broadcasting Live</span>
                                 </>
                             )}
                             {activeType === "rage" && (
