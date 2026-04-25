@@ -1,225 +1,141 @@
-import React, { useState } from "react";
-import { 
-    Eye, 
-    Flame, 
-    Clock, 
-    Target, 
-    Navigation, 
-    Layers, 
-    Brain, 
-    LayoutTemplate, 
-    MonitorSmartphone,
-    TrendingUp,
-    AlertCircle,
-    ChevronRight,
-    BarChart3
-} from "lucide-react";
+import React from "react";
 import "../styles/analytics.css";
-
-const ANALYTICS_SECTIONS = [
-    { 
-        id: "gaze", 
-        label: "Gaze-Based Analytics", 
-        icon: Eye, 
-        description: "The foundation of eye tracking: Fixations, Saccades, and Scanpaths.",
-        metrics: [
-            { label: "Fixations", value: "12.8k", sub: "Where users stop and focus", status: "stable" },
-            { label: "Saccades", value: "8.3k", sub: "Quick eye movements between points", status: "rising" },
-            { label: "Scanpaths", value: "142", sub: "Full journeys of eye movement", status: "stable" }
-        ]
-    },
-    { 
-        id: "heatmap", 
-        label: "Heatmap Analytics", 
-        icon: Flame, 
-        description: "Visual representation of attention, clicks, and scroll depth.",
-        metrics: [
-            { label: "Attention", value: "84%", sub: "Red = most viewed areas", status: "rising" },
-            { label: "Clicks", value: "2.4k", sub: "Where users actually click", status: "stable" },
-            { label: "Scroll", value: "62%", sub: "Average page depth reached", status: "falling" }
-        ]
-    },
-    { 
-        id: "time", 
-        label: "Time-Based Analytics", 
-        icon: Clock, 
-        description: "Focus on duration and engagement metrics like TTFF and Dwell Time.",
-        metrics: [
-            { label: "TTFF", value: "340ms", sub: "Time to First Fixation", status: "good" },
-            { label: "Dwell Time", value: "3.2s", sub: "Avg time spent on elements", status: "rising" },
-            { label: "Total View", value: "24m", sub: "Total viewing time", status: "stable" }
-        ]
-    },
-    { 
-        id: "aoi", 
-        label: "Area of Interest (AOI)", 
-        icon: Target, 
-        description: "Metrics for defined sections like buttons, images, and text blocks.",
-        metrics: [
-            { label: "AOI Count", value: "6", sub: "Defined focus regions", status: "stable" },
-            { label: "Avg Focus", value: "4.1s", sub: "Time spent per section", status: "rising" },
-            { label: "Entry Pt", value: "Hero", sub: "Most common landing zone", status: "fixed" }
-        ]
-    },
-    { 
-        id: "nav", 
-        label: "Navigation & Behavior", 
-        icon: Navigation, 
-        description: "Pattern detection (F/Z patterns) and visual journey mapping.",
-        metrics: [
-            { label: "F-Pattern", value: "72%", sub: "Reading behavior alignment", status: "stable" },
-            { label: "Drop-off", value: "14%", sub: "Ignored area percentage", status: "falling" },
-            { label: "Landings", value: "Top-L", sub: "Where eyes land first", status: "fixed" }
-        ]
-    },
-    { 
-        id: "comp", 
-        label: "Comparative Analytics", 
-        icon: Layers, 
-        description: "A/B testing results and cross-version performance comparison.",
-        metrics: [
-            { label: "Winner", value: "Ver B", sub: "Top performing version", status: "rising" },
-            { label: "Lift", value: "+18%", sub: "Improvement in attention", status: "rising" },
-            { label: "Confidence", value: "95%", sub: "Statistical significance", status: "good" }
-        ]
-    },
-    { 
-        id: "cognitive", 
-        label: "Cognitive Load", 
-        icon: Brain, 
-        description: "Measures mental effort through pupil dilation and scanning patterns.",
-        metrics: [
-            { label: "Effort", value: "Low", sub: "Pupil dilation index", status: "good" },
-            { label: "Confuse", value: "12%", sub: "Repeated scanning detected", status: "falling" },
-            { label: "Smooth", value: "88%", sub: "Visual flow effectiveness", status: "stable" }
-        ]
-    },
-    { 
-        id: "ux", 
-        label: "UI/UX Performance", 
-        icon: LayoutTemplate, 
-        description: "Visual hierarchy effectiveness and CTA visibility scores.",
-        metrics: [
-            { label: "CTA Score", value: "9.2", sub: "Visibility effectiveness", status: "rising" },
-            { label: "Hierarchy", value: "Optimal", sub: "Visual flow score", status: "good" },
-            { label: "Engage", value: "High", sub: "Content engagement score", status: "rising" }
-        ]
-    },
-    { 
-        id: "device", 
-        label: "Device & Context", 
-        icon: MonitorSmartphone, 
-        description: "Behavioral changes across Desktop, Mobile, and Tablet.",
-        metrics: [
-            { label: "Mobile Focus", value: "Top-C", sub: "Primary mobile landing", status: "stable" },
-            { label: "Screen Gap", value: "8%", sub: "Pattern diff between devices", status: "falling" },
-            { label: "Res Impact", value: "Med", sub: "Resolution based differences", status: "stable" }
-        ]
-    }
-];
+import { useLiveAnalytics } from "../hooks/useLiveAnalytics";
+import { formatDuration, formatNumber, formatPercent } from "../utils/liveFormat";
 
 const Analytics = () => {
-    const [activeSection, setActiveSection] = useState("gaze");
+  const { data, loading, error } = useLiveAnalytics();
 
-    const currentSection = ANALYTICS_SECTIONS.find(s => s.id === activeSection);
+  const totals = data?.totals || {};
+  const topElements = data?.topElements || [];
+  const topPages = data?.topPages || [];
+  const scrollDepth = data?.scrollDepth || [0, 0, 0, 0];
+  const sectionEngagement = data?.sectionEngagement || [];
 
-    return (
-        <div className="analytics-hub">
-            <aside className="analytics-sidebar">
-                <div className="sidebar-header">
-                    <BarChart3 size={20} className="text-primary" />
-                    <h2>Analytics Hub</h2>
+  const clickOverview = [
+    { label: "Total Gaze Points", value: formatNumber(totals.points || 0), change: `${formatPercent(totals.attentionRetention || 0)} retained`, positive: true },
+    { label: "Avg Points / Session", value: formatNumber(totals.avgPointsPerSession || 0), change: `${formatNumber(totals.sessions || 0)} sessions`, positive: true },
+    { label: "Bounce Rate", value: formatPercent(totals.bounceRate || 0), change: "lower is better", positive: false },
+    { label: "Return Visitors", value: formatPercent(totals.returnVisitors || 0), change: "live cohort", positive: true },
+  ];
+
+  return (
+    <div className="analytics-container">
+      <h1 className="page-title analytics-title">Analytics</h1>
+      <p className="page-subtitle">Live behavior analytics synced from backend sessions and gaze points.</p>
+      {loading ? <p className="page-subtitle">Loading live analytics...</p> : null}
+      {error ? <p className="page-subtitle" style={{ color: "#dc2626" }}>{error}</p> : null}
+
+      <div className="analytics-kpi-grid">
+        {clickOverview.map((item) => (
+          <div className="analytics-kpi" key={item.label}>
+            <span className="analytics-kpi-label">{item.label}</span>
+            <div className="analytics-kpi-row">
+              <span className="analytics-kpi-value">{item.value}</span>
+              <span className={`analytics-kpi-change ${item.positive ? "positive" : "negative"}`}>
+                {item.change}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="analytics-bento">
+        <div className="analytics-card card-clicked-elements">
+          <h2 className="analytics-card-title">Most Viewed Areas</h2>
+          <div className="clicked-list">
+            {topElements.length ? (
+              topElements.map((el, i) => (
+                <div className="clicked-item" key={el.element}>
+                  <div className="clicked-info">
+                    <span className="clicked-rank">#{i + 1}</span>
+                    <span className="clicked-name">{el.element}</span>
+                    <span className="clicked-count">{formatNumber(el.views)}</span>
+                  </div>
+                  <div className="clicked-bar-bg">
+                    <div className="clicked-bar-fill" style={{ width: `${el.percentage}%` }}></div>
+                  </div>
                 </div>
-                <nav className="sidebar-nav">
-                    {ANALYTICS_SECTIONS.map((section) => (
-                        <button
-                            key={section.id}
-                            className={`nav-btn ${activeSection === section.id ? "active" : ""}`}
-                            onClick={() => setActiveSection(section.id)}
-                        >
-                            <section.icon size={18} />
-                            <span>{section.label}</span>
-                            {activeSection === section.id && <ChevronRight size={14} className="ml-auto" />}
-                        </button>
-                    ))}
-                </nav>
-            </aside>
-
-<<<<<<< HEAD
-            <main className="analytics-content">
-                <header className="content-header">
-                    <div className="header-info">
-                        <div className="icon-badge">
-                            <currentSection.icon size={24} />
-                        </div>
-                        <div>
-                            <h1>{currentSection.label}</h1>
-                            <p>{currentSection.description}</p>
-                        </div>
-                    </div>
-                    <div className="header-actions">
-                        <button className="export-btn">Export Report</button>
-                        <button className="time-btn">Last 30 Days</button>
-                    </div>
-                </header>
-
-                <div className="metrics-grid">
-                    {currentSection.metrics.map((metric, i) => (
-                        <div className="metric-card" key={i}>
-                            <div className="metric-header">
-                                <span className="metric-label">{metric.label}</span>
-                                <TrendingUp size={16} className={`status-icon ${metric.status}`} />
-                            </div>
-                            <div className="metric-value">{metric.value}</div>
-                            <div className="metric-sub">{metric.sub}</div>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="visualization-area">
-                    <div className="viz-card">
-                        <div className="viz-header">
-                            <h3>Engagement Distribution</h3>
-                            <div className="viz-controls">
-                                <span>Day</span>
-                                <span>Week</span>
-                                <span className="active">Month</span>
-                            </div>
-                        </div>
-                        <div className="mock-chart">
-                            {/* SVG Chart Placeholder */}
-                            <svg width="100%" height="200" viewBox="0 0 800 200">
-                                <path 
-                                    d="M0,150 Q100,100 200,130 T400,80 T600,120 T800,50" 
-                                    fill="none" 
-                                    stroke="#b46445" 
-                                    strokeWidth="3" 
-                                />
-                                <path 
-                                    d="M0,150 Q100,100 200,130 T400,80 T600,120 T800,50 V200 H0 Z" 
-                                    fill="rgba(180, 100, 69, 0.1)" 
-                                />
-                                <circle cx="400" cy="80" r="4" fill="#b46445" />
-                                <text x="410" y="75" fill="#666" fontSize="12">Peak Interest</text>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div className="insight-card">
-                        <div className="insight-header">
-                            <AlertCircle size={18} />
-                            <h3>Key Insights</h3>
-                        </div>
-                        <ul className="insight-list">
-                            <li>Users are noticing the primary CTA {activeSection === "time" ? "faster than average (340ms)" : "consistently within the first 2 seconds"}.</li>
-                            <li>The F-pattern reading style is dominant, suggesting top-left content is critical.</li>
-                            <li>Significant drop-off observed after the pricing section on mobile devices.</li>
-                        </ul>
-                    </div>
-                </div>
-            </main>
+              ))
+            ) : (
+              <p>No live points yet.</p>
+            )}
+          </div>
         </div>
-    );
+
+        <div className="analytics-card card-scroll-depth">
+          <h2 className="analytics-card-title">Scroll Depth Analysis</h2>
+          <p className="analytics-card-subtitle">Generated from recent gaze-y distribution</p>
+
+          <div className="scroll-pie-container">
+            <svg viewBox="0 0 36 36" className="scroll-pie-chart">
+              <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#f1f5f9" strokeWidth="6"></circle>
+              <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#ef4444" strokeWidth="6" strokeDasharray={`${scrollDepth[3]} ${100 - scrollDepth[3]}`} strokeDashoffset="25"></circle>
+              <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#f59e0b" strokeWidth="6" strokeDasharray={`${scrollDepth[2]} ${100 - scrollDepth[2]}`} strokeDashoffset={-scrollDepth[3]}></circle>
+              <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#3b82f6" strokeWidth="6" strokeDasharray={`${scrollDepth[1]} ${100 - scrollDepth[1]}`} strokeDashoffset={-(scrollDepth[3] + scrollDepth[2])}></circle>
+              <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#10b981" strokeWidth="6" strokeDasharray={`${scrollDepth[0]} ${100 - scrollDepth[0]}`} strokeDashoffset={-(scrollDepth[3] + scrollDepth[2] + scrollDepth[1])}></circle>
+              <text x="18" y="18" className="pie-center-text" dominantBaseline="middle" textAnchor="middle">Live</text>
+            </svg>
+
+            <div className="scroll-pie-legend">
+              <div className="legend-item"><span className="legend-color" style={{ background: "#ef4444" }}></span> 75-100%: {formatPercent(scrollDepth[3])}</div>
+              <div className="legend-item"><span className="legend-color" style={{ background: "#f59e0b" }}></span> 50-75%: {formatPercent(scrollDepth[2])}</div>
+              <div className="legend-item"><span className="legend-color" style={{ background: "#3b82f6" }}></span> 25-50%: {formatPercent(scrollDepth[1])}</div>
+              <div className="legend-item"><span className="legend-color" style={{ background: "#10b981" }}></span> 0-25%: {formatPercent(scrollDepth[0])}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="analytics-card card-section-engagement">
+          <h2 className="analytics-card-title">Section Engagement Trend</h2>
+          <p className="analytics-card-subtitle">Normalized scores from live gaze sessions</p>
+          <div className="line-chart-container">
+            <div className="line-chart-labels" style={{ marginTop: 0, marginBottom: 14 }}>
+              {sectionEngagement.map((s) => (
+                <span key={s.label}>{s.label}</span>
+              ))}
+            </div>
+            <div style={{ display: "grid", gap: 10 }}>
+              {sectionEngagement.map((section) => (
+                <div key={section.label}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                    <span>{section.label}</span>
+                    <span>{section.score}%</span>
+                  </div>
+                  <div className="clicked-bar-bg">
+                    <div className="clicked-bar-fill" style={{ width: `${section.score}%` }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="analytics-card card-top-pages">
+          <h2 className="analytics-card-title">Top Pages (Live)</h2>
+          <p className="analytics-card-subtitle">Ranked by session volume and gaze intensity</p>
+          <div className="top-pages-list">
+            {topPages.map((page, i) => (
+              <div className="top-page-item" key={page.page + i}>
+                <div className="top-page-rank">
+                  <span className={`rank-badge ${i < 3 ? "top" : ""}`}>{i + 1}</span>
+                </div>
+                <div className="top-page-info">
+                  <span className="top-page-path">{page.page}</span>
+                  <div className="top-page-stats">
+                    <span>{formatNumber(page.sessions)} sessions</span>
+                    <span>{formatNumber(page.points)} points</span>
+                    <span>{formatDuration(page.avgDurationMs)}</span>
+                  </div>
+                </div>
+                <div className="top-page-score">{page.engagementScore}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Analytics;

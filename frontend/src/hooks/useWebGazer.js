@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import webgazer from 'webgazer';
 
 export function useWebGazer({ onGaze, enabled, onError }) {
   const listenerRef = useRef(onGaze);
@@ -11,14 +12,14 @@ export function useWebGazer({ onGaze, enabled, onError }) {
   const startTracking = useCallback(async () => {
     if (startedRef.current) return;
 
-    if (!window.webgazer) {
-      const error = new Error('WebGazer not loaded. Add the CDN script in index.html.');
+    if (!webgazer) {
+      const error = new Error('WebGazer missing.');
       onError?.(error);
       throw error;
     }
 
     try {
-      await window.webgazer
+      await webgazer
         .setRegression('ridge')
         .setTracker('TFFacemesh')
         .setGazeListener((data) => {
@@ -31,9 +32,9 @@ export function useWebGazer({ onGaze, enabled, onError }) {
         })
         .begin();
 
-      window.webgazer.showPredictionPoints(false);
-      window.webgazer.showVideoPreview(true);
-      window.webgazer.showFaceOverlay(false);
+      webgazer.showPredictionPoints(false);
+      webgazer.showVideoPreview(true);
+      webgazer.showFaceOverlay(false);
       startedRef.current = true;
     } catch (err) {
       onError?.(err);
@@ -42,11 +43,11 @@ export function useWebGazer({ onGaze, enabled, onError }) {
   }, [onError]);
 
   const stopTracking = useCallback(() => {
-    if (!window.webgazer) return;
+    if (!webgazer) return;
 
     try {
-      window.webgazer.clearGazeListener();
-      window.webgazer.end();
+      webgazer.clearGazeListener();
+      webgazer.end();
     } catch (_err) {
       // No-op if webgazer internals already stopped.
     }
