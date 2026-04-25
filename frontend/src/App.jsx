@@ -22,6 +22,8 @@ import ABTesting from "./pages/ABTesting";
 import EyeMovementPatterns from "./pages/EyeMovementPatterns";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
+import Heatmaps from "./pages/Heatmaps";
+import Sessions from "./pages/Sessions";
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(() => window.innerWidth > 1024);
@@ -75,6 +77,8 @@ function App() {
             <Route path="/ab-testing" element={<ABTesting />} />
             <Route path="/eye-movement-patterns" element={<EyeMovementPatterns />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/heatmaps" element={<Heatmaps />} />
+            <Route path="/sessions" element={<Sessions />} />
           </Route>
           
           <Route path="*" element={<Navigate to="/overview" replace />} />

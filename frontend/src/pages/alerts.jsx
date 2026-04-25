@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/alerts.css";
+import "../styles/Alerts.css";
 
 const WarningIcon = ({ color = "#f59e0b" }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

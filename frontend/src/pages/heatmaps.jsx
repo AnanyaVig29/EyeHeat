@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import h337 from "heatmap.js";
 import { MousePointer2, Eye, MousePointerClick, ScrollText, Info, Target, Users, Activity, Flame } from "lucide-react";
-import "../styles/heatmaps.css";
+import "../styles/Heatmaps.css";
 
 const HEATMAP_TYPES = [
     { id: "gaze", label: "Gaze Heatmap", icon: Eye, description: "Shows where users look the most based on eye-tracking fixations." },
