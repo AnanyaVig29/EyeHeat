@@ -1,8 +1,38 @@
+<<<<<<< HEAD
 import React from "react";
 import { Link } from "react-router-dom";
 import DatePicker from "../components/DatePicker";
 import DomainSelector from "../components/DomainSelector";
 import "../styles/Overview.css";
+=======
+import React, { useMemo, useState } from "react";
+import "../styles/overview.css";
+import LiveHeatmapPanel from "../components/LiveHeatmapPanel";
+import { useLiveAnalytics } from "../hooks/useLiveAnalytics";
+import { formatDuration, formatNumber, formatPercent } from "../utils/liveFormat";
+
+const ChevronDownIcon = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m6 9 6 6 6-6" />
+    </svg>
+);
+
+const CalendarIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+        <line x1="16" x2="16" y1="2" y2="6" />
+        <line x1="8" x2="8" y1="2" y2="6" />
+        <line x1="3" x2="21" y1="10" y2="10" />
+    </svg>
+);
+
+const UserIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+    </svg>
+);
+>>>>>>> afd3fe2f182745079a258921570903b63d11621e
 
 const TrendUpIcon = () => (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -20,10 +50,27 @@ const TrendDownIcon = () => (
 
 function Overview() {
 
+    const { data, loading, error } = useLiveAnalytics();
+    const totals = data?.totals || {};
+    const heatmapPoints = data?.heatmap?.points || [];
+
+    const kpiCards = useMemo(
+        () => [
+            { label: "Total Sessions", value: formatNumber(totals.sessions || 0), positive: true, change: `${formatPercent((totals.sessions || 0) ? 100 : 0)} live` },
+            { label: "Total Users", value: formatNumber(totals.users || 0), positive: true, change: `${formatPercent((totals.returnVisitors || 0))} return` },
+            { label: "Avg. Time on Site", value: formatDuration(totals.avgDurationMs || 0), positive: true, change: `${formatNumber(totals.avgPointsPerSession || 0)} pts/session` },
+            { label: "Bounce Rate", value: formatPercent(totals.bounceRate || 0), positive: false, change: `${formatPercent(100 - (totals.bounceRate || 0))} retained` },
+            { label: "Page Views", value: formatNumber(totals.pageViews || 0), positive: true, change: `${formatNumber(totals.points || 0)} gaze points` },
+        ],
+        [totals]
+    );
+
     return (
         <div className="overview-container">
             <div className="overview-header">
                 <h1 className="overview-title">Overview</h1>
+                {loading ? <p className="page-subtitle">Loading live overview...</p> : null}
+                {error ? <p className="page-subtitle" style={{ color: "#dc2626" }}>{error}</p> : null}
                 <div className="overview-controls">
                     <DomainSelector />
                     <DatePicker />
@@ -31,72 +78,35 @@ function Overview() {
             </div>
 
             <div className="kpi-grid">
-                <div className="kpi-card">
-                    <span className="kpi-title">Total Sessions</span>
-                    <div className="kpi-value-row">
-                        <span className="kpi-value">12,842</span>
-                        <span className="kpi-change positive"><TrendUpIcon /> 12.5%</span>
+                {kpiCards.map((card) => (
+                    <div className="kpi-card" key={card.label}>
+                        <span className="kpi-title">{card.label}</span>
+                        <div className="kpi-value-row">
+                            <span className="kpi-value">{card.value}</span>
+                            <span className={`kpi-change ${card.positive ? "positive" : "negative"}`}>
+                                {card.positive ? <TrendUpIcon /> : <TrendDownIcon />} {card.change}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div className="kpi-card">
-                    <span className="kpi-title">Total Users</span>
-                    <div className="kpi-value-row">
-                        <span className="kpi-value">8,396</span>
-                        <span className="kpi-change positive"><TrendUpIcon /> 8.2%</span>
-                    </div>
-                </div>
-                <div className="kpi-card">
-                    <span className="kpi-title">Avg. Time on Site</span>
-                    <div className="kpi-value-row">
-                        <span className="kpi-value">3m 24s</span>
-                        <span className="kpi-change positive"><TrendUpIcon /> 15.1%</span>
-                    </div>
-                </div>
-                <div className="kpi-card">
-                    <span className="kpi-title">Bounce Rate</span>
-                    <div className="kpi-value-row">
-                        <span className="kpi-value">32.6%</span>
-                        <span className="kpi-change negative"><TrendDownIcon /> 4.3%</span>
-                    </div>
-                </div>
-                <div className="kpi-card">
-                    <span className="kpi-title">Page Views</span>
-                    <div className="kpi-value-row">
-                        <span className="kpi-value">28,765</span>
-                        <span className="kpi-change positive"><TrendUpIcon /> 10.3%</span>
-                    </div>
-                </div>
+                ))}
             </div>
 
             <div className="bento-grid">
                 <div className="bento-card">
                     <div className="bento-header">Heatmap Overview</div>
                     <div className="heatmap-content">
-                        <div className="heatmap-image-wrapper">
-                            <div className="mock-website">
-                                <div className="mock-nav">
-                                    <div className="mock-nav-logo"></div>
-                                    <div className="mock-nav-item" style={{ width: '30px' }}></div>
-                                    <div className="mock-nav-item" style={{ width: '40px', marginLeft: '10px' }}></div>
-                                    <div className="mock-nav-item" style={{ width: '60px', marginLeft: '10px' }}></div>
-                                </div>
-                                <div className="mock-hero">
-                                    <div className="mock-title"></div>
-                                    <div className="mock-title" style={{ width: '45%' }}></div>
-                                    <div className="mock-subtitle" style={{ marginTop: '20px' }}></div>
-                                    <div className="mock-subtitle" style={{ width: '30%' }}></div>
-                                    <div className="mock-button"></div>
-                                </div>
-                            </div>
-                            <div className="heatmap-overlay"></div>
-                        </div>
+                        <LiveHeatmapPanel points={heatmapPoints} />
                         <div className="heatmap-footer">
                             <div className="heatmap-scale">
                                 <span>Low Attention</span>
                                 <div className="scale-bar"></div>
                                 <span>High Attention</span>
                             </div>
+<<<<<<< HEAD
                             <Link to="/heatmaps" className="btn-outline">View Full Heatmap</Link>
+=======
+                            <button className="btn-outline">Live Sessions: {formatNumber(data?.heatmap?.sessionCount || 0)}</button>
+>>>>>>> afd3fe2f182745079a258921570903b63d11621e
                         </div>
                     </div>
                 </div>
@@ -107,7 +117,7 @@ function Overview() {
 
                         <div className="engagement-chart-card">
                             <h4>Avg. Time on Page</h4>
-                            <div className="value">3m 24s</div>
+                            <div className="value">{formatDuration(totals.avgDurationMs || 0)}</div>
                             <svg className="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="blue-grad" x1="0" y1="0" x2="0" y2="1">
@@ -122,7 +132,7 @@ function Overview() {
 
                         <div className="engagement-chart-card">
                             <h4>Pages per Session</h4>
-                            <div className="value">4.2</div>
+                            <div className="value">{Math.max(1, (data?.topPages?.length || 0)).toFixed(1)}</div>
                             <svg className="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
                                 <path d="M0,18 L15,15 L25,22 L40,12 L55,18 L65,8 L80,15 L90,5 L100,10" fill="none" stroke="#3b82f6" strokeWidth="2" />
                                 <path d="M0,18 L15,15 L25,22 L40,12 L55,18 L65,8 L80,15 L90,5 L100,10 L100,30 L0,30 Z" fill="url(#blue-grad)" stroke="none" />
@@ -131,7 +141,7 @@ function Overview() {
 
                         <div className="engagement-chart-card">
                             <h4>Bounce Rate</h4>
-                            <div className="value">32.6%</div>
+                            <div className="value">{formatPercent(totals.bounceRate || 0)}</div>
                             <svg className="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="red-grad" x1="0" y1="0" x2="0" y2="1">
@@ -146,7 +156,7 @@ function Overview() {
 
                         <div className="engagement-chart-card">
                             <h4>Return Visitors</h4>
-                            <div className="value">24.5%</div>
+                            <div className="value">{formatPercent(totals.returnVisitors || 0)}</div>
                             <svg className="mini-chart" viewBox="0 0 100 30" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="green-grad" x1="0" y1="0" x2="0" y2="1">

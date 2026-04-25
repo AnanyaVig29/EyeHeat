@@ -1,33 +1,33 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
-import "./styles/Navbar.css";
+import Navbar from "./components/navbar";
+//import ProtectedRoute from "./components/ProtectedRoute";
+import "./styles/navbar.css";
 import "./App.css";
-import "./styles/Overview.css";
-import "./styles/Analytics.css";
-import "./styles/Alerts.css";
-import "./styles/Reports.css";
-import "./styles/ABTesting.css";
+import "./styles/overview.css";
+import "./styles/analytics.css";
+import "./styles/alerts.css";
+import "./styles/reports.css";
+import "./styles/abtesting.css";
 import "./styles/EyeMovementPatterns.css";
-import "./styles/Login.css";
-import "./styles/Settings.css";
+import "./styles/heatmaps.css";
+//import "./styles/Login.css";
+import "./styles/settings.css";
 
 // Import pages
-import Overview from "./pages/Overview";
-import Analytics from "./pages/Analytics";
-import Reports from "./pages/Reports";
-import Alerts from "./pages/Alerts";
-import ABTesting from "./pages/ABTesting";
+import Overview from "./pages/overview";
+import Analytics from "./pages/analytics";
+import Reports from "./pages/reports";
+import Alerts from "./pages/alerts";
+import ABTesting from "./pages/abtesting";
 import EyeMovementPatterns from "./pages/EyeMovementPatterns";
-import Login from "./pages/Login";
-import Settings from "./pages/Settings";
-import Heatmaps from "./pages/Heatmaps";
-import Sessions from "./pages/Sessions";
+import Heatmaps from "./pages/heatmaps";
+//import Login from "./pages/Login";
+import Settings from "./pages/settings";
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(() => window.innerWidth > 1024);
-  const location = useLocation();
+  // const location = useLocation();
 
   const toggleNav = () => setIsNavOpen(!isNavOpen);
 
@@ -41,17 +41,18 @@ function App() {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
-  const token = localStorage.getItem("token");
-  const isLoggedIn = !!token;
-  const isLoginPage = location.pathname === "/login";
+
+  // --- Login disabled for now ---
+  // const token = localStorage.getItem("token");
+  // const isLoggedIn = !!token;
+  // const isLoginPage = location.pathname === "/login";
 
   return (
-    <div className={`app-container ${isNavOpen && !isLoginPage ? "nav-open" : "nav-closed"}`}>
+    <div className={`app-container ${isNavOpen ? "nav-open" : "nav-closed"}`}>
       {/* MOBILE BACKDROP */}
-      {isNavOpen && !isLoginPage && <div className="nav-backdrop" onClick={toggleNav}></div>}
+      {isNavOpen && <div className="nav-backdrop" onClick={toggleNav}></div>}
 
-      {!isNavOpen && !isLoginPage && (
+      {!isNavOpen && (
         <button className="nav-open-btn" onClick={toggleNav} aria-label="Open Navigation">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="12" x2="21" y2="12" />
@@ -61,26 +62,24 @@ function App() {
         </button>
       )}
 
-      {!isLoginPage && <Navbar isOpen={isNavOpen} toggleNav={toggleNav} />}
+      <Navbar isOpen={isNavOpen} toggleNav={toggleNav} />
 
-      <main className="main-content" style={isLoginPage ? { marginLeft: 0 } : {}}>
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<Navigate to="/overview" replace />} />
-          <Route path="/login" element={isLoggedIn ? <Navigate to="/overview" replace /> : <Login />} />
-          
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute isAllowed={isLoggedIn} />}>
-            <Route path="/overview" element={<Overview />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/ab-testing" element={<ABTesting />} />
-            <Route path="/eye-movement-patterns" element={<EyeMovementPatterns />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/heatmaps" element={<Heatmaps />} />
-            <Route path="/sessions" element={<Sessions />} />
-          </Route>
-          
+          {/* <Route path="/login" element={<Login />} /> */}
+
+          {/* All routes open (login disabled) */}
+          <Route path="/overview" element={<Overview />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/heatmaps" element={<Heatmaps />} />
+          <Route path="/sessions" element={<Reports />} />
+          <Route path="/ab-testing" element={<ABTesting />} />
+          <Route path="/eye-movement-patterns" element={<EyeMovementPatterns />} />
+          <Route path="/settings" element={<Settings />} />
+
           <Route path="*" element={<Navigate to="/overview" replace />} />
         </Routes>
       </main>
@@ -89,3 +88,4 @@ function App() {
 }
 
 export default App;
+

@@ -12,9 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Local env and sqlite artifacts
-.env
-.env.*
+# Local env (root-level only; .env.example should be committed)
+/.env
 backend/eyeheat.db
 backend/eyeheat.db-*
 

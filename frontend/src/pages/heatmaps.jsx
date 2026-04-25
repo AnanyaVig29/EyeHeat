@@ -1,29 +1,28 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import h337 from "heatmap.js";
-import { MousePointer2, Eye, MousePointerClick, ScrollText, Info, Target, Users, Activity, Flame } from "lucide-react";
+import React from "react";
+import { Info } from "lucide-react";
 import "../styles/heatmaps.css";
-
-const HEATMAP_TYPES = [
-    { id: "gaze", label: "Gaze Heatmap", icon: Eye, description: "Shows where users look the most based on eye-tracking fixations." },
-    { id: "click", label: "Click Heatmap", icon: MousePointerClick, description: "Tracks where users click or tap. Useful for conversion analysis." },
-    { id: "scroll", label: "Scroll Heatmap", icon: ScrollText, description: "Shows how far users scroll down. Fades as attention drops off." },
-    { id: "move", label: "Move Heatmap", icon: MousePointer2, description: "Tracks mouse movement. A reliable proxy for user attention." },
-    { id: "aoi", label: "AOI Heatmap", icon: Target, description: "Focuses on specific sections (buttons, images, text) to show attention in defined regions." },
-    { id: "segment", label: "Segment Heatmap", icon: Users, description: "Compares heatmaps for different user groups (e.g., Mobile vs Desktop)." },
-    { id: "realtime", label: "Real-time Heatmap", icon: Activity, description: "Shows live user activity as it happens on the interface." },
-    { id: "rage", label: "Rage Click Heatmap", icon: Flame, description: "Highlights repeated rapid clicks in a single area, indicating frustration." }
-];
+import LiveHeatmapPanel from "../components/LiveHeatmapPanel";
+import { useLiveAnalytics } from "../hooks/useLiveAnalytics";
+import { formatNumber, formatPercent } from "../utils/liveFormat";
 
 const Heatmaps = () => {
-    const [activeType, setActiveType] = useState("gaze");
-    const containerRef = useRef(null);
-    const heatmapInstance = useRef(null);
+  const { data, loading, error } = useLiveAnalytics();
+  const points = data?.heatmap?.points || [];
+  const totals = data?.totals || {};
+  const topElements = data?.topElements || [];
 
-    // Mock data generators
-    const generateMockData = (type, width, height) => {
-        const points = [];
-        const count = type === "move" ? 150 : 60;
+  return (
+    <div className="heatmaps-container">
+      <header className="heatmaps-header">
+        <div className="title-group">
+          <h1>Heatmap Analytics</h1>
+          <p style={{ marginTop: "0.5rem" }}>Live heatmap generated from backend gaze tracking data.</p>
+          {loading ? <p style={{ marginTop: "0.5rem" }}>Loading live heatmap...</p> : null}
+          {error ? <p style={{ marginTop: "0.5rem", color: "#dc2626" }}>{error}</p> : null}
+        </div>
+      </header>
 
+<<<<<<< HEAD
         if (type === "gaze") {
             // Focus on Hero title and CTA
             for (let i = 0; i < 40; i++) {
@@ -108,10 +107,22 @@ const Heatmaps = () => {
         }
         return points;
     };
+=======
+      <div className="heatmap-main-layout">
+        <div className="heatmap-viewer-card" style={{ padding: 16 }}>
+          <LiveHeatmapPanel points={points} height={460} />
+        </div>
+>>>>>>> afd3fe2f182745079a258921570903b63d11621e
 
-    const initHeatmap = () => {
-        if (!containerRef.current) return;
+        <aside className="heatmap-sidebar">
+          <div className="info-card">
+            <h3><Info size={18} style={{ verticalAlign: "middle", marginRight: "8px" }} /> Live Heatmap Status</h3>
+            <p>Sessions: {formatNumber(totals.sessions || 0)}</p>
+            <p>Total Points: {formatNumber(totals.points || 0)}</p>
+            <p>Bounce Rate: {formatPercent(totals.bounceRate || 0)}</p>
+          </div>
 
+<<<<<<< HEAD
         // Clear previous
         containerRef.current.innerHTML = "";
 
@@ -325,6 +336,24 @@ const Heatmaps = () => {
             </div>
         </div >
     );
+=======
+          <div className="info-card" style={{ background: "rgba(180, 100, 69, 0.1)", borderColor: "rgba(180, 100, 69, 0.3)" }}>
+            <h3 style={{ color: "#4a3b32" }}>Top Attention Regions</h3>
+            {topElements.length ? (
+              topElements.map((element) => (
+                <p key={element.element} style={{ color: "#5a4b42" }}>
+                  {element.element}: {formatPercent(element.percentage)}
+                </p>
+              ))
+            ) : (
+              <p style={{ color: "#5a4b42" }}>No attention regions available yet.</p>
+            )}
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+>>>>>>> afd3fe2f182745079a258921570903b63d11621e
 };
 
 export default Heatmaps;

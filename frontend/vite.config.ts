@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  envDir: resolve(__dirname, '..'),
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {

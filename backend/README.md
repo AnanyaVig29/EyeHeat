@@ -11,6 +11,8 @@ Setup
 Environment
 - PORT: API port (default: 3001)
 - CLIENT_ORIGIN: CORS origin (default: http://localhost:5173)
+- LOGIN_EMAIL: login email for /api/auth/login (default: demo@eyeheat.com)
+- LOGIN_PASSWORD: login password for /api/auth/login (default: demo123)
 
 API Endpoints
 - GET /health
@@ -29,6 +31,11 @@ API Endpoints
   Response: { session, points }
 - GET /api/sessions/:id/csv
   Response: CSV file download (x,y,ts)
+- POST /api/auth/login
+  Body: { "email": "demo@eyeheat.com", "password": "demo123" }
+  Response: { "token": "...", "message": "Success" }
+- GET /api/stats/live
+  Response: live dashboard metrics, heatmap points, alerts, recommendations, and A/B summary
 
 Notes
 - SQLite DB file is created at backend/eyeheat.db automatically.

@@ -1,7 +1,8 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_ROOT = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+export const API_BASE = API_ROOT.endsWith('/api') ? API_ROOT : `${API_ROOT}/api`;
 
 export async function startSession(pageUrl) {
-  const res = await fetch(`${BASE}/gaze/start`, {
+  const res = await fetch(`${API_BASE}/gaze/start`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pageUrl }),
@@ -17,7 +18,7 @@ export async function startSession(pageUrl) {
 export async function postBatch(sessionId, points) {
   if (!points.length) return;
 
-  const res = await fetch(`${BASE}/gaze/batch`, {
+  const res = await fetch(`${API_BASE}/gaze/batch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, points }),
@@ -31,7 +32,7 @@ export async function postBatch(sessionId, points) {
 }
 
 export async function endSession(sessionId) {
-  const res = await fetch(`${BASE}/gaze/end`, {
+  const res = await fetch(`${API_BASE}/gaze/end`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -45,9 +46,18 @@ export async function endSession(sessionId) {
 }
 
 export async function getSessions() {
-  const res = await fetch(`${BASE}/sessions`);
+  const res = await fetch(`${API_BASE}/sessions`);
   if (!res.ok) {
     throw new Error('Failed to fetch sessions');
+  }
+
+  return res.json();
+}
+
+export async function getLiveStats() {
+  const res = await fetch(`${API_BASE}/stats/live`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch live stats');
   }
 
   return res.json();

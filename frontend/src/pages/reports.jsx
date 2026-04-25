@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 import "../styles/Reports.css";
 
 const DocIcon = ({ color }) => (
@@ -56,90 +57,67 @@ const branchNodes = [
     { path: "/about", users: "3,842", connectFrom: 1 },
     { path: "/blog", users: "4,123", connectFrom: 2 },
 ];
+=======
+import "../styles/reports.css";
+import { useLiveAnalytics } from "../hooks/useLiveAnalytics";
+import { formatDuration, formatNumber } from "../utils/liveFormat";
+>>>>>>> afd3fe2f182745079a258921570903b63d11621e
 
 function Reports() {
-    return (
-        <div className="reports-container">
-            <h1 className="page-title reports-title">Reports</h1>
-            <p className="page-subtitle">Review weekly summaries, behavior flow, and export-ready documents.</p>
+  const { data, loading, error } = useLiveAnalytics();
+  const recentSessions = data?.recentSessions || [];
+  const topPages = data?.topPages || [];
 
-            <div className="reports-grid">
-                {/* Reports List Card */}
-                <div className="reports-card">
-                    <div className="reports-card-header">
-                        <h2 className="reports-card-title">Reports</h2>
-                        <a href="#" className="reports-view-all">View All Reports</a>
-                    </div>
+  return (
+    <div className="reports-container">
+      <h1 className="page-title reports-title">Reports</h1>
+      <p className="page-subtitle">Live export-ready summaries from backend tracking data.</p>
+      {loading ? <p className="page-subtitle">Loading report data...</p> : null}
+      {error ? <p className="page-subtitle" style={{ color: "#dc2626" }}>{error}</p> : null}
 
-                    <div className="reports-list">
-                        {reports.map((report, index) => (
-                            <div className="report-item" key={index}>
-                                <div className="report-icon" style={{ background: report.bg }}>
-                                    <DocIcon color={report.color} />
-                                </div>
-                                <div className="report-info">
-                                    <span className="report-title">{report.title}</span>
-                                    <span className="report-date">{report.date}</span>
-                                </div>
-                                <button className="report-pdf-btn">
-                                    <PdfIcon /> PDF
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+      <div className="reports-grid">
+        <div className="reports-card">
+          <div className="reports-card-header">
+            <h2 className="reports-card-title">Recent Sessions</h2>
+          </div>
 
-                    <button className="create-report-btn">Create Custom Report</button>
+          <div className="reports-list">
+            {recentSessions.length ? (
+              recentSessions.map((session) => (
+                <div className="report-item" key={session.id}>
+                  <div className="report-info">
+                    <span className="report-title">{session.pageUrl || "/"}</span>
+                    <span className="report-date">{new Date(session.createdAt).toLocaleString()}</span>
+                  </div>
+                  <div className="report-pdf-btn">{formatNumber(session.pointCount)} pts</div>
                 </div>
+              ))
+            ) : (
+              <p>No sessions yet.</p>
+            )}
+          </div>
 
-                {/* User Behavior Flow Card */}
-                <div className="reports-card flow-card">
-                    <h2 className="reports-card-title">User Behavior Flow</h2>
-                    <p className="flow-subtitle">See the journey users take on your website</p>
-
-                    <div className="flow-diagram">
-                        {/* Main flow row */}
-                        <div className="flow-main-row">
-                            {flowNodes.map((node, index) => (
-                                <React.Fragment key={index}>
-                                    <div className="flow-node">
-                                        <span className="flow-path">{node.path}</span>
-                                        <span className="flow-users">{node.users} users</span>
-                                    </div>
-                                    {index < flowNodes.length - 1 && (
-                                        <div className="flow-arrow">
-                                            <ArrowRightIcon />
-                                        </div>
-                                    )}
-                                </React.Fragment>
-                            ))}
-                        </div>
-
-                        {/* Connector lines */}
-                        <div className="flow-connectors">
-                            <div className="connector-line connector-1">
-                                <ArrowDownIcon />
-                                <ArrowUpIcon />
-                            </div>
-                            <div className="connector-line connector-2">
-                                <ArrowUpIcon />
-                                <ArrowDownIcon />
-                            </div>
-                        </div>
-
-                        {/* Branch row */}
-                        <div className="flow-branch-row">
-                            {branchNodes.map((node, index) => (
-                                <div className="flow-node branch-node" key={index}>
-                                    <span className="flow-path">{node.path}</span>
-                                    <span className="flow-users">{node.users} users</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <button className="create-report-btn">Generate Latest Snapshot</button>
         </div>
-    );
+
+        <div className="reports-card flow-card">
+          <h2 className="reports-card-title">User Behavior Flow</h2>
+          <p className="flow-subtitle">Top paths ranked by live session activity</p>
+
+          <div className="flow-diagram" style={{ display: "grid", gap: 16 }}>
+            {topPages.map((page, idx) => (
+              <div key={page.page + idx} className="flow-node" style={{ width: "100%", justifyContent: "space-between" }}>
+                <span className="flow-path">{idx + 1}. {page.page}</span>
+                <span className="flow-users">
+                  {formatNumber(page.sessions)} sessions • {formatNumber(page.points)} points • {formatDuration(page.avgDurationMs)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Reports;

@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 import "../styles/Alerts.css";
 
 const WarningIcon = ({ color = "#f59e0b" }) => (
@@ -97,228 +98,93 @@ const alerts = [
         time: "2d ago",
     },
 ];
+=======
+import "../styles/alerts.css";
+import { useLiveAnalytics } from "../hooks/useLiveAnalytics";
+import { formatDuration, formatPercent } from "../utils/liveFormat";
+>>>>>>> afd3fe2f182745079a258921570903b63d11621e
 
 function Alerts() {
-    return (
-        <div className="alerts-container">
-            <h1 className="page-title alerts-title">Alerts</h1>
-            <p className="page-subtitle">Track important insights and issues in one place.</p>
-            <div className="alerts-grid">
-                {/* AI Insights & Recommendations */}
-                <div className="alerts-card">
-                    <h2 className="alerts-card-title">AI Insights &amp; Recommendations</h2>
+  const { data, loading, error } = useLiveAnalytics();
 
-                    <div className="insights-list">
-                        {insights.map((item, index) => (
-                            <div className="insight-item" key={index}>
-                                <div className="insight-icon" style={{ background: item.iconBg }}>
-                                    {item.icon}
-                                </div>
-                                <div className="insight-content">
-                                    <span className="insight-severity" style={{ color: item.severityColor }}>
-                                        • {item.severity}
-                                    </span>
-                                    <p className="insight-text">{item.text}</p>
-                                </div>
-                                <button className="view-details-btn">View Details</button>
-                            </div>
-                        ))}
-                    </div>
+  const alerts = data?.alerts || [];
+  const recommendations = data?.recommendations || [];
+  const totals = data?.totals || {};
+
+  return (
+    <div className="alerts-container">
+      <h1 className="page-title alerts-title">Alerts</h1>
+      <p className="page-subtitle">Live insights generated from backend gaze/session stream.</p>
+      {loading ? <p className="page-subtitle">Loading live alerts...</p> : null}
+      {error ? <p className="page-subtitle" style={{ color: "#dc2626" }}>{error}</p> : null}
+
+      <div className="alerts-grid">
+        <div className="alerts-card">
+          <h2 className="alerts-card-title">AI Insights &amp; Recommendations</h2>
+          <div className="insights-list">
+            {recommendations.map((item) => (
+              <div className="insight-item" key={item.title}>
+                <div className="insight-content">
+                  <span className="insight-severity">• Live Suggestion</span>
+                  <p className="insight-text"><strong>{item.title}:</strong> {item.summary}</p>
                 </div>
-
-                {/* Alerts */}
-                <div className="alerts-card">
-                    <div className="alerts-card-header">
-                        <h2 className="alerts-card-title">Alerts</h2>
-                        <a href="#" className="alerts-view-all">View All Alerts</a>
-                    </div>
-
-                    <div className="alert-list">
-                        {alerts.map((alert, index) => (
-                            <div className="alert-item" key={index}>
-                                <div className="alert-icon" style={{ background: alert.iconBg }}>
-                                    {alert.icon}
-                                </div>
-                                <div className="alert-content">
-                                    <span className="alert-title">{alert.title}</span>
-                                    <span className="alert-desc">{alert.desc}</span>
-                                </div>
-                                <span className="alert-time">{alert.time}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* UI/UX Improvement Suggestions */}
-            <div className="ux-section">
-                <h2 className="ux-section-title">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b46445" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 16v-4" />
-                        <path d="M12 8h.01" />
-                    </svg>
-                    UI/UX Improvement Suggestions
-                </h2>
-                <p className="ux-section-subtitle">Based on eye tracking patterns and user behavior analysis</p>
-
-                <div className="ux-cards-grid">
-
-                    <div className="ux-card priority-high">
-                        <div className="ux-card-badge high">Critical</div>
-                        <h3 className="ux-card-title">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="10" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            CTA Button Visibility
-                        </h3>
-                        <p className="ux-card-desc">
-                            Eye tracking shows users look at the hero section but miss the primary CTA button. 
-                            Only 18% of gaze fixations land on the button area.
-                        </p>
-                        <div className="ux-card-suggestions">
-                            <span className="suggestion-label">Suggestions:</span>
-                            <ul>
-                                <li>Increase button size by 30% and use a contrasting color</li>
-                                <li>Add whitespace around the CTA to draw attention</li>
-                                <li>Use directional cues (arrows, images looking at CTA)</li>
-                            </ul>
-                        </div>
-                        <div className="ux-card-metrics">
-                            <div className="metric">
-                                <span className="metric-value">18%</span>
-                                <span className="metric-label">Gaze fixation</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">2.1s</span>
-                                <span className="metric-label">Avg. time to notice</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">4.3%</span>
-                                <span className="metric-label">Click-through rate</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ux-card priority-medium">
-                        <div className="ux-card-badge medium">Important</div>
-                        <h3 className="ux-card-title">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-                                <line x1="3" x2="21" y1="9" y2="9" />
-                                <line x1="9" x2="9" y1="21" y2="9" />
-                            </svg>
-                            Navigation Layout
-                        </h3>
-                        <p className="ux-card-desc">
-                            Heatmap data reveals users scan the top navigation in an F-pattern but 
-                            frequently miss the last 2 menu items. Dropdown menus receive very low attention.
-                        </p>
-                        <div className="ux-card-suggestions">
-                            <span className="suggestion-label">Suggestions:</span>
-                            <ul>
-                                <li>Reduce navigation items to 5-6 max</li>
-                                <li>Group related items under mega menus</li>
-                                <li>Highlight the most important links with visual weight</li>
-                            </ul>
-                        </div>
-                        <div className="ux-card-metrics">
-                            <div className="metric">
-                                <span className="metric-value">72%</span>
-                                <span className="metric-label">F-pattern match</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">0.8s</span>
-                                <span className="metric-label">Avg. nav scan time</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">12%</span>
-                                <span className="metric-label">Dropdown usage</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ux-card priority-medium">
-                        <div className="ux-card-badge medium">Important</div>
-                        <h3 className="ux-card-title">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <path d="M16 13H8" />
-                                <path d="M16 17H8" />
-                            </svg>
-                            Content Hierarchy
-                        </h3>
-                        <p className="ux-card-desc">
-                            Users spend 65% of viewing time above the fold. Key information like pricing 
-                            and testimonials placed below fold receive minimal eye fixations.
-                        </p>
-                        <div className="ux-card-suggestions">
-                            <span className="suggestion-label">Suggestions:</span>
-                            <ul>
-                                <li>Move social proof (testimonials) above the fold</li>
-                                <li>Add scroll indicators to encourage exploration</li>
-                                <li>Use visual anchors to guide eye flow downward</li>
-                            </ul>
-                        </div>
-                        <div className="ux-card-metrics">
-                            <div className="metric">
-                                <span className="metric-value">65%</span>
-                                <span className="metric-label">Above-fold time</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">35%</span>
-                                <span className="metric-label">Scroll depth</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">8%</span>
-                                <span className="metric-label">Below-fold clicks</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ux-card priority-low">
-                        <div className="ux-card-badge low">Suggestion</div>
-                        <h3 className="ux-card-title">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                            </svg>
-                            Form Design &amp; UX
-                        </h3>
-                        <p className="ux-card-desc">
-                            Eye tracking shows users hesitate at the contact form. Gaze patterns indicate 
-                            confusion — users look back and forth between fields. Drop-off is 48% at form start.
-                        </p>
-                        <div className="ux-card-suggestions">
-                            <span className="suggestion-label">Suggestions:</span>
-                            <ul>
-                                <li>Reduce form fields from 8 to 4 essential ones</li>
-                                <li>Add inline validation and progress indicators</li>
-                                <li>Use autofill and smart defaults to reduce effort</li>
-                            </ul>
-                        </div>
-                        <div className="ux-card-metrics">
-                            <div className="metric">
-                                <span className="metric-value">48%</span>
-                                <span className="metric-label">Form drop-off</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">3.2s</span>
-                                <span className="metric-label">Avg. hesitation</span>
-                            </div>
-                            <div className="metric">
-                                <span className="metric-value">6</span>
-                                <span className="metric-label">Back-glances</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+                <button className="view-details-btn">Live</button>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+
+        <div className="alerts-card">
+          <div className="alerts-card-header">
+            <h2 className="alerts-card-title">Current Alerts</h2>
+          </div>
+
+          <div className="alert-list">
+            {alerts.map((alert) => (
+              <div className="alert-item" key={alert.title}>
+                <div className="alert-content">
+                  <span className="alert-title">{alert.title}</span>
+                  <span className="alert-desc">{alert.desc}</span>
+                </div>
+                <span className="alert-time">{alert.severity.toUpperCase()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="ux-section">
+        <h2 className="ux-section-title">UI/UX Improvement Suggestions</h2>
+        <p className="ux-section-subtitle">Live KPI summary</p>
+
+        <div className="ux-cards-grid">
+          <div className="ux-card priority-high">
+            <div className="ux-card-badge high">Attention</div>
+            <h3 className="ux-card-title">Retention and Bounce</h3>
+            <p className="ux-card-desc">
+              Attention retention is <strong>{formatPercent(totals.attentionRetention || 0)}</strong> with a bounce rate of <strong>{formatPercent(totals.bounceRate || 0)}</strong>.
+            </p>
+          </div>
+
+          <div className="ux-card priority-medium">
+            <div className="ux-card-badge medium">Engagement</div>
+            <h3 className="ux-card-title">Session Duration Quality</h3>
+            <p className="ux-card-desc">
+              Average session duration is <strong>{formatDuration(totals.avgDurationMs || 0)}</strong>.
+            </p>
+          </div>
+
+          <div className="ux-card priority-low">
+            <div className="ux-card-badge low">Traffic</div>
+            <h3 className="ux-card-title">Returning Visitor Ratio</h3>
+            <p className="ux-card-desc">
+              Returning visitor signal is currently <strong>{formatPercent(totals.returnVisitors || 0)}</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Alerts;
